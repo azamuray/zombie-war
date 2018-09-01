@@ -1,40 +1,57 @@
 # -*- coding: utf-8 -*-
 
-# Переменные, содержащие локации, перевел в массив (список)
-# Написал функцию, чтоб убрать дублирование
+# Изменил функцию first_function на change_location.
+# Также добавил еще цикл while в функцию change_location.
+# Теперь есть возможность смены локации, даже если игрок не убил всех зомби.
+# Игра работает замечательно, но есть много вложенностей if-ов и while-ов
 
-def first_function(location, count_zombie):
+def change_location(location, count_zombie):
     print "Ты находишься в локации" , location
-    while count_zombie > 0:
-        print "Перед тобой %d зомби. Твои действия?" % count_zombie
-        choice = raw_input("1. Убить зомби.\n2. Перейти в следующую локацию.\n -> ")
-        if choice == "1":
-            count_zombie = count_zombie - 1
-            print "Ты убил 1 зомби."
-            print "Теперь в этой локации %d зомби." % count_zombie
-        else:
-            print "Ты не можешь сменить локацию, пока не убьешь всех зомби"
-
-    print "*** СМЕНА ЛОКАЦИИ ***"
-
+    if count_zombie > 0:
+        while count_zombie > 0:
+            print "Перед тобой %d зомби. Твои действия?" % count_zombie
+            print "  1. Убить зомби."
+            print "  2. Перейти в следующую локацию."
+            choice = raw_input(" -> ")
+            if choice == "1":
+                count_zombie = count_zombie - 1
+                print "Ты убил 1 зомби."
+                print "Теперь в этой локации %d зомби." % count_zombie
+            else:
+                print "  *** СМЕНА ЛОКАЦИИ ***"
+                break
+    else:
+        print "--- В этой локации нет зомби. ---"
+    return count_zombie
+        
 locations = ["Национальная Библиотека",
              "ТЦ Беркат",
              "ТРЦ Гранд-Парк"]
 
-print locations[0]
-
-count = [2, 5, 8]
+zombies = [2, 5, 8]
 
 print "Квестовая игра: Зомбиапокалипсис"
-print "Правила просты: Вводишь цифру соответствующего пункта и нажимаешь ENTER"
+print "Как играть: Вводишь цифру соответствующего пункта и нажимаешь ENTER."
 
-print "*** ИГРА НАЧАЛАСЬ ***"
+print "  *** ИГРА НАЧАЛАСЬ ***"
 
 print "Город наполнен живыми мертвецами, тебе нужно передвигаться по локациям и убивать их."
 
-first_function(locations[0], count[0])
-first_function(locations[1], count[1])
-first_function(locations[2], count[2])
+all_zombies = zombies[0] + zombies[1] + zombies[2]
+
+while all_zombies > 0:
+    print "Выберите локацию:"
+    print "  1.", locations[0]
+    print "  2.", locations[1]
+    print "  3.", locations[2]
+    action = raw_input(" -> ")
+    if action == "1":
+        zombies[0] = change_location(locations[0], zombies[0])
+    elif action == "2":
+        zombies[1] = change_location(locations[1], zombies[1])
+    elif action == "3":
+        zombies[2] = change_location(locations[2], zombies[2])
+    all_zombies = zombies[0] + zombies[1] + zombies[2]
 
 print ""
 print "Ты прошел все три локации."
