@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Добавил еще одну локацию.
-# Из-за этого пришлось поменять код в 5 местах.
-# Это нужно как-то сократить.
-# Я решил написать встроенную функцию 'sum(chars)', которая суммирует все числа массива.
-# Теперь, если нужно добавить локацию, нужно код поменять лишь в 3 местах
+# Добавил цикл for, который выводит массив из локаций.
+# Это избавило нас от многих print-ов. Также упростило добавление локаций.
+# Хоть это и упростило добавление новой локации, но все равно приходится
+# лазить в коде и прописывать вывод локаций. Нужно это исправить.
+
 
 def change_location(location, count_zombie):
     print "Ты находишься в локации" , location
@@ -46,10 +46,10 @@ all_zombies = sum(zombies)
 while all_zombies > 0:
     print 20*"-"
     print "Выберите локацию:"
-    print "  1.", locations[0]
-    print "  2.", locations[1]
-    print "  3.", locations[2]
-    print "  4.", locations[3]
+    number_location = 1
+    for i in locations:
+        print "  %d. %s" % (number_location, i)
+        number_location += 1
     action = raw_input(" -> ")
     if action == "1":
         zombies[0] = change_location(locations[0], zombies[0])
