@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # Обновление:
-# Наконец-то смог решить проблему добавления локаций.
-# Отныне не нужно в коде прописывать ни локацию, ни количество зомби.
-# Теперь можно добавить локацию и количество зомби в
-# файле 'locations.txt'.
+# Отныне локации хранятся в базе данных, а не в txt файле
 
+# импортирую библиотеку для работы с базой данных
+import sqlite3
 
 def change_location(location, count_zombie):
     print "Ты находишься в локации" , location
@@ -28,46 +27,35 @@ def change_location(location, count_zombie):
         print "--- В этой локации нет зомби. ---"
     return count_zombie
 
+# Подключаюсь к Базе данных и выгружаю все данные из таблицы locations
+connection = sqlite3.connect('base.db')
+cursor = connection.cursor()
+cursor.execute("SELECT * FROM locations")
+rows = cursor.fetchall()
 
 # Создаю пустой массив для локаций
-locations = []
-
-# Открываю текстовый файл 'locations.txt'.
-open_file = open('locations.txt', 'r')
-
-# Выгружаю все локации из файла 'locations.txt'
+# Выгружаю все локации из базы данных base.db
 # и помещаю эти локации в пустой массив 'locations[]'.
-for loc in open_file:
-    loc = loc[:-4]
-    loc = loc.strip('=')
-    locations.append(loc.strip())
-
+locations = []
+for loc in rows:
+    loc = loc[0]
+    locations.append(loc)
 
 # Создаю пустой массив для количества зомби на каждую локацию
-zombies = []
-
-# Открываю текстовый файл 'locations.txt'.
-open_file = open('locations.txt', 'r')
-
-# Выгружаю все локации из файла 'locations.txt'
+# Выгружаю все локации из базы данных base.db
 # и помещаю эти локации в пустой массив 'zombies[]'.
-for zom in open_file:
-    zom = zom[-3:-1]
-    zom = zom.strip('=')
-    zombies.append(int(zom))
-
+zombies = []
+for zom in rows:
+    zom = zom[1]
+    zombies.append(zom)
 
 print "Квестовая игра: Зомбиапокалипсис"
 print "Как играть: Вводишь цифру соответствующего пункта и нажимаешь ENTER."
-
 print "  *** ИГРА НАЧАЛАСЬ ***"
-
 print "Город наполнен живыми мертвецами, тебе нужно передвигаться по локациям и убивать их."
 
-
-all_zombies = sum(zombies)
-
 # цикл, который не дает игре завершиться, пока не умрут все зомби
+all_zombies = sum(zombies)
 while all_zombies > 0:
     print 20*"-"
     print "Выбери локацию:"
@@ -77,7 +65,8 @@ while all_zombies > 0:
         print "  %d. %s" % (number_location, i)
         number_location += 1
     action = raw_input(" -> ")
-    if action >= "1" and action <= str(len(locations)):
+    action = int(action)
+    if action >= 1 and action <= len(locations):
         action = int(action) - 1
         zombies[action] = change_location(locations[action], zombies[action])
     else:
@@ -85,7 +74,6 @@ while all_zombies > 0:
     print "Всего зомби:", sum(zombies)
     all_zombies = sum(zombies)
 
-
 print ""
-print "Ты прошел все три локации."
+print "В городе больше нет живых мертвецов."
 print "*** КОНЕЦ ИГРЫ ***"
