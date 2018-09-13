@@ -33,20 +33,13 @@ cursor = connection.cursor()
 cursor.execute("SELECT * FROM locations")
 rows = cursor.fetchall()
 
-# Создаю пустой массив для локаций
-# Выгружаю все локации из базы данных base.db
-# и помещаю эти локации в пустой массив 'locations[]'.
+# выгруженные данные из таблицы locations дабавляю в пустые массивы
 locations = []
-for loc in rows:
-    loc = loc[0]
-    locations.append(loc)
-
-# Создаю пустой массив для количества зомби на каждую локацию
-# Выгружаю все локации из базы данных base.db
-# и помещаю эти локации в пустой массив 'zombies[]'.
 zombies = []
-for zom in rows:
-    zom = zom[1]
+for row in rows:
+    loc = row[0]
+    zom = row[1]
+    locations.append(loc)
     zombies.append(zom)
 
 print "Квестовая игра: Зомбиапокалипсис"
@@ -55,8 +48,7 @@ print "  *** ИГРА НАЧАЛАСЬ ***"
 print "Город наполнен живыми мертвецами, тебе нужно передвигаться по локациям и убивать их."
 
 # цикл, который не дает игре завершиться, пока не умрут все зомби
-all_zombies = sum(zombies)
-while all_zombies > 0:
+while sum(zombies) > 0:
     print 20*"-"
     print "Выбери локацию:"
     number_location = 1
@@ -65,14 +57,12 @@ while all_zombies > 0:
         print "  %d. %s" % (number_location, i)
         number_location += 1
     action = raw_input(" -> ")
-    action = int(action)
-    if action >= 1 and action <= len(locations):
+    if action >= "1" and action <= str(len(locations)):
         action = int(action) - 1
         zombies[action] = change_location(locations[action], zombies[action])
     else:
         print "--- Неверная команда. ---"
-    print "Всего зомби:", sum(zombies)
-    all_zombies = sum(zombies)
+    print "Всего зомби в городе:", sum(zombies)
 
 print ""
 print "В городе больше нет живых мертвецов."
